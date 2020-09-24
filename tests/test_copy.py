@@ -1,6 +1,7 @@
 
-import os
+import os, os.path
 import filecmp
+import shutil
 from collections import namedtuple
 
 from unittest.mock import patch, call
@@ -62,3 +63,15 @@ def test_check_disks_space_not_ok(mock_disk_usage):
     DiskResponse = namedtuple('DiskResponse', ['total', 'used', 'free'])
     mock_disk_usage.return_value = DiskResponse(3, 2, 1)
     assert not alphacopy.check_disks('a', 'b')
+
+def test_mkdir_copy_tree():
+    src = "./tests/tree_test"
+    dst = "./tests/copid_tree"
+    subdirs = ["subdirectory1", "subdirectory2"] 
+    alphacopy.copy_tree(src, dst)
+    assert os.path.isdir(dst) == True
+    for subdir in subdirs:
+        sd = os.path.join(dst, subdir)
+        assert os.path.isdir(sd) == True
+    shutil.rmtree(dst)
+    
